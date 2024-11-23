@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+      <link rel="stylesheet" href="style.css">
+       <link rel="stylesheet" href="css/bootstrap.css">
+    <title>Document</title>
+</head>
+<body>
+  <style>
+    .done{
+    background-color:red;
+}
+  </style>
+
+    <section style="width: 50%; direction: rtl;display: flex;flex-direction: column;background-color: rgba(109, 90, 133, 0.38); border-radius: 5px; ">
+<!-- header -->
+ <div  style="text-align: center; background-color:  darkgray;width: 100%; border-radius: 5px 5px 0 0 ;">
+   <button onclick="addBtn()" class="circle" id="add" style="float: right; margin-block:10px  ;margin-right: 10px; " ><i class="fa-solid fa-plus"></i></button>
+  <h1 style="display: inline;" >المهام </h1>
+ </div>
+<!-- ::header:: -->
+ <!-- table task -->
+  <div id="nav" class="table-task" style="display: flex;align-items: center;justify-content: center; margin-top: 10px; flex-direction: column; ">
+    <!-- task -->
+     <div class="task" style="display: flex;align-items: center;justify-content: center;width: 90%;border-bottom: 1px solid black;transition: box-shadow 0.2s;">
+      <!-- info task -->
+       <div class="info-task" style="display: flex;flex-direction: column; align-items: self-start; width: 60%;">
+        <h4>المهمة</h4>
+        <span></span>
+       </div>
+      <!--:: info task:: -->
+      <!-- btn command -->
+       <div class="bt" style="display: flex;align-items: center;justify-content: space-evenly; width: 30%;">
+              <button class="circle" id="delete" style="float: right; margin-block:10px  ;margin-right: 10px;background-color: brown;  color: white;" >add</button>
+              <button class="circle" id="check" style="float: right; margin-block:10px  ;margin-right: 10px; background-color: green; color: white;" >add</button>
+              <button class="circle" id="update" style="float: right; margin-block:10px  ;margin-right: 10px; background-color: dodgerblue; color: white; " >add</button>
+       </div>
+      <!-- ::btn command:: -->
+     </div>
+    <!-- ::task:: -->
+  </div>
+ <!-- ::table task:: -->
+
+    </section>
+
+<script>
+  let update = document.getElementById('update');
+  let delet = document.getElementById('delete');
+  let check = document.getElementById('check');
+  let add = document.getElementById('add');
+  let ident = document.getElementById('ident');
+  let nav = document.getElementById('nav');
+
+
+
+
+  let tasks = [
+     {
+      "title":"قراءة كتاب",
+      "date":"",
+      "isDone" :false
+    },
+     {
+      "title":"رياضة",
+      "date":"",
+      "isDone" :false
+    },
+     {
+      "title":"عمل",
+      "date":"",
+      "isDone" :false
+    }
+
+  ]
+  function getStorege(){
+       
+let reterntask =  JSON.parse(localStorage.getItem("tasks"));
+tasks = reterntask ?? [];
+
+  }
+   getStorege()
+
+  function addTask(){
+    nav.innerHTML ="";
+    let index =0;
+    for(task of tasks) {
+      let content = `
+<div class="task ${task.isDone ? "done":"" }" style="  color:white;display: flex;align-items: center;justify-content: center;width: 90%;border-bottom: 1px solid black;transition: box-shadow 0.2s;">
+      <!-- info task -->
+       <div class="info-task" style="display: flex;flex-direction: column; align-items: self-start; width: 60%;">
+        <h4>${task.title}</h4>
+        <span>${task.date}</span>
+       </div>
+      <!--:: info task:: -->
+      <!-- btn command -->
+       <div class="bt" style="display: flex;align-items: center;justify-content: space-evenly; width: 30%;">
+              <button onclick="deleteTask(${index})" class="circle" id="delete" style="float: right; margin-block:10px  ;margin-right: 10px;background-color: brown;  color: white;" ><i class="fa-solid fa-trash"></i></button>
+                ${task.isDone  ? 
+                `
+                              <button onclick="checkTask(${index})" class="circle" id="check" style="float: right; margin-block:10px  ;margin-right: 10px; background-color: green; color: white;" ><i class="fa-solid fa-check"></i></button>
+
+                `:
+                `              <button onclick="checkTask(${index})" class="circle" id="check" style="float: right; margin-block:10px  ;margin-right: 10px; background-color: green; color: white;" ><i class="fa-solid fa-xmark"></i></button>
+` }
+          
+              <button onclick="updateTask(${index})" class="circle" id="update" style="float: right; margin-block:10px  ;margin-right: 10px; background-color: dodgerblue; color: white; " ><i class="fa-solid fa-pen"></i></button>
+       </div>
+      <!-- ::btn command:: -->
+     </div>
+    <!-- ::task:: -->
+`
+nav.innerHTML += content;
+
+   index++;
+
+    }
+  
+
+  
+  }
+ 
+addTask();
+function addBtn(){
+  let date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth()+1;
+  let year = date.getFullYear();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+ let newTask= prompt('الرجاء إدخال المهمة ');
+     if (newTask === null) {
+  
+    return; 
+  }
+ let newObj = {
+      "title":newTask,
+      "date": hours +":"+minutes+"  " + day +"/"  +month+"/"+year,
+      "isDone" :false
+ }
+tasks.push(newObj);
+
+addTask();
+}
+function updateTask(index){
+  let task = tasks[index];
+   let renameTask= prompt('الرجاء إدخال  التعديل للمهمة ',task.title);
+   storege();
+     if (renameTask === null) {
+    alert('تم إلغاء التعديل');
+    return; 
+  }
+   task.title = renameTask; 
+   alert('قد تم تغيير الاسم')
+   storege();
+addTask();
+
+
+}
+function deleteTask(index){
+  alert("هل انت موافق على حذف المهمة");
+  tasks.splice(index,1);
+  storege();
+addTask();
+}
+
+function checkTask(index){
+   let date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth()+1;
+  let year = date.getFullYear();
+  let hours = date.getHours();
+  let minutes = date.getMinutes();
+  let task = tasks[index];
+  task.date = hours +":"+minutes+"  " + day +"/"  +month+"/"+year;
+  if(task.isDone){
+    task.isDone = false;
+    storege();
+  }else{
+ task.isDone = true;
+ storege();
+  }
+ 
+
+addTask();
+}
+
+function storege(){
+  let stringTasks = JSON.stringify(tasks);
+localStorage.setItem("tasks",stringTasks );
+
+}
+</script>
+
+
+
+
+      <script src="script.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery-3.7.1.slim.min.js"></script>
+    
+</body>
+</html>
